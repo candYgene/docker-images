@@ -28,6 +28,8 @@ ARG VOS_PREFIX=/usr/local/virtuoso-opensource
 ARG VOS_MAXROWS=100000
 ARG VOS_MAXVECSZ=3000000
 ARG VOS_ADJVECSZ=1
+ARG VOS_NUMBUF=340000
+ARG VOS_MAXDRTBUF=250000
 
 # compile & install Virtuoso including serveral VAD packages
 WORKDIR /tmp
@@ -56,6 +58,8 @@ RUN sed -i "/DirsAllowed/ s:$:,${VOS_SHARE}:" ${VOS_CONFIG}
 RUN sed -i "/ResultSetMaxRows/ s:=\s*[0-9]*:= ${VOS_MAXROWS}:" ${VOS_CONFIG}
 RUN sed -i "/MaxVectorSize/ s:=\s*[0-9]*:= ${VOS_MAXVECSZ}:" ${VOS_CONFIG}
 RUN sed -i "/AdjustVectorSize/ s:=\s*[0-9]*:= ${VOS_ADJVECSZ}:" ${VOS_CONFIG}
+RUN sed -i "/^NumberOfBuffers/ s:=\s*[0-9]*:= ${VOS_NUMBUF}:" ${VOS_CONFIG}
+RUN sed -i "/^MaxDirtyBuffers/ s:=\s*[0-9]*:= ${VOS_MAXDRTBUF}:" ${VOS_CONFIG}
 WORKDIR ${VOS_SHARE}
 
 # expose (default) Virtuoso server ports
