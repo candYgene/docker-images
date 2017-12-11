@@ -51,7 +51,8 @@ ENV PATH=${VOS_PREFIX}/bin:${PATH}
 # update Virtuoso config file (if VOS_PARAMS not empty)
 ENV VOS_CFG_FILE=${VOS_PREFIX}/var/lib/virtuoso/db/virtuoso.ini
 COPY update_config.py /tmp
-RUN python update_config.py -c ${VOS_CFG_FILE} ${VOS_PARAMS}
+RUN if [ "$VOS_PARAMS" ]; then \
+      python update_config.py -c ${VOS_CFG_FILE} ${VOS_PARAMS} ; fi
 
 # add volume for file sharing
 VOLUME /tmp/share
