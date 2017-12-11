@@ -56,6 +56,7 @@ RUN if [ "$VOS_PARAMS" ]; then \
 
 # add volume for file sharing
 VOLUME /tmp/share
+WORKDIR /tmp/share
 
 # expose (default) Virtuoso server ports
 EXPOSE 8890
