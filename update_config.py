@@ -3,15 +3,16 @@ This script is used to change the config file of the Virtuoso Universal Server.
 
 Usage:
   update_config.py -h|-v
-  update_config.py [-c CFG_FILE] PARAMS...
+  update_config.py [-d] [-c CFG_FILE] PARAMS...
 
 Arguments:
   PARAMS...                 Set parameter(s) using the format:
-                              'section:option=value'
+                              'sec:opt=val sec:opt=val...'
 
 Options:
   -h, --help                Show the usage message.
   -v, --version             Show software version.
+  -d, --dry-run             Show what would be done but don't exexute anything.
   -c, --config CFG_FILE     Config file path [default: ./virtuoso.ini].
 
 """
@@ -22,16 +23,15 @@ import re
 import logging
 
 from docopt import docopt
-from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
+from ConfigParser import SafeConfigParser
 
 __author__ = 'Arnold Kuzniar'
-__version__ = '0.1'
+__version__ = '0.1.0'
 __status__ = 'alpha'
 __license__ = 'Apache License, Version 2.0'
 
 
 class VirtuosoConfigParser(SafeConfigParser):
-
     def __init__(self):
         SafeConfigParser.__init__(self)
         
@@ -42,13 +42,16 @@ class VirtuosoConfigParser(SafeConfigParser):
                 raise IOError("Incorrect input format: '{0}'".format(par))
             section, option, value = match.groups()
             if self.has_option(section, option) is False:
-                raise IOError("Unsupported config section/option: '{0}:{1}'" \
-                    .format(section, option))
-            self.set(section, option, value)
-
+                raise IOError("Unsupported config section or option: '{0}:{1}'"
+                              .format(section, option))
+            if self.get(section, option) == value:
+                return False
+            else:
+                self.set(section, option, value)
+                return True
 
     def __str__(self):
-        conf = ''   
+        conf = ''
         for section in self.sections():
             conf += section + "\n"
             for option, value in self.items(section):
@@ -62,14 +65,15 @@ if __name__ == '__main__':
     params = args['PARAMS']
     log_file = os.path.splitext(os.path.basename(__file__))[0] + '.log'
     cfg_file = args['--config']
+    dry_run = args['--dry-run']
     
     if os.path.exists(cfg_file) is False:
         raise IOError("Config file '{0}' not found.".format(cfg_file))
 
     cfg = VirtuosoConfigParser()
-    cfg.optionxform = str # set case-sensitivity
+    cfg.optionxform = str  # set case-sensitivity
     cfg.read(cfg_file)
-    cfg.setParams(params)
+    flag = cfg.setParams(params)
     
     # write log file of config changes
     logging.basicConfig(
@@ -78,9 +82,12 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='[%(asctime)s]\t%(pathname)s:%(lineno)d\t%(levelname)s\t%(message)s')
     logging.info("InputParams: %s\n", ' '.join(params))
-    #logging.info("Modified config:\n%s", cfg)
-    
+
     # backup the original config & write a modified config
-    os.rename(cfg_file, cfg_file + '.bck')
-    with open(cfg_file, 'w') as fp:
-        cfg.write(fp)
+    if dry_run is True:
+        print(cfg)
+    else:
+        if flag is True:
+            os.rename(cfg_file, cfg_file + '.bck')
+        with open(cfg_file, 'w') as fp:
+            cfg.write(fp)
