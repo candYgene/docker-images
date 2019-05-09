@@ -29,7 +29,17 @@ RUN apt-get update && \
 # add command-line args and set defaults
 ARG VOS_VERSION=stable/7
 ARG VOS_PREFIX=/usr/local/virtuoso-opensource
-ARG VOS_CFG_PARS="HTTPServer:ServerPort=8890 Parameters:ServerPort=1111"
+ARG VOS_SHARE=/tmp/share
+ARG VOS_CFG_PARS="\
+  URIQA:DefaultHost=localhost:8890 \
+  HTTPServer:ServerPort=8890 \
+  Parameters:ServerPort=1111 \
+  Parameters:DirsAllowed=.,$VOS_PREFIX/share/virtuoso/vad,$VOS_SHARE \
+  Parameters:MaxVectorSize=3000000 \
+  Parameters:AdjustVectorSize=1 \
+  Parameters:NumberOfBuffers=340000 \
+  Parameters:MaxDirtyBuffers=250000 \
+  SPARQL:ResultSetMaxRows=1000"
 
 # compile Virtuoso including several VAD packages
 WORKDIR /tmp
@@ -57,8 +67,8 @@ RUN if [ "${VOS_CFG_PARS}" ]; then \
     python update_config.py -c ${VOS_CFG_FILE} ${VOS_CFG_PARS}; fi
 
 # add volume for file sharing
-VOLUME /tmp/share
-WORKDIR /tmp/share
+VOLUME $VOS_SHARE
+WORKDIR $VOS_SHARE
 
 # expose HTTP and DB server ports
 EXPOSE 8890 1111
