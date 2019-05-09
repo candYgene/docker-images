@@ -40,19 +40,19 @@ class VirtuosoConfigParser(SafeConfigParser):
         SafeConfigParser.__init__(self)
         
     def setParams(self, params):
+        flag = False
         for par in params:
-            match = re.search("^(\w+):(\w+)=(\S+)", par)
+            match = re.search("(\w+):(\w+)=(\S+)", par)
             if not match:
                 raise IOError("Incorrect input format: '{0}'".format(par))
             section, option, value = match.groups()
             if self.has_option(section, option) is False:
                 raise IOError("Unsupported config section or option: '{0}:{1}'"
                               .format(section, option))
-            if self.get(section, option) == value:
-                return False
-            else:
+            if self.get(section, option) != value:
                 self.set(section, option, value)
-                return True
+                flag = True
+        return flag
 
     def __str__(self):
         conf = ''
