@@ -24,7 +24,7 @@ RUN apt-get update && \
       python-pip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    pip install -U pip docopt
+    pip install -U pip six docopt
 
 # add command-line args and set defaults
 ARG VOS_VERSION=stable/7
