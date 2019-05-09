@@ -21,9 +21,13 @@ import os
 import sys
 import re
 import logging
-
+import six
 from docopt import docopt
-from ConfigParser import SafeConfigParser
+
+if six.PY2:
+    from ConfigParser import SafeConfigParser
+else:
+    from configparser import SafeConfigParser
 
 __author__ = 'Arnold Kuzniar'
 __version__ = '0.1.0'
