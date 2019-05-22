@@ -62,7 +62,7 @@ ENV PATH=${VOS_PREFIX}/bin:${PATH}
 
 # update Virtuoso config file
 ENV VOS_CFG_FILE=${VOS_PREFIX}/var/lib/virtuoso/db/virtuoso.ini
-COPY update_config.py /tmp
+COPY src/update_config.py /tmp
 RUN if [ "${VOS_CFG_PARS}" ]; then \
     python update_config.py -c ${VOS_CFG_FILE} ${VOS_CFG_PARS}; fi
 
