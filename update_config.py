@@ -1,5 +1,5 @@
 """
-This script is used to change the config file of the Virtuoso Universal Server.
+This script reads/writes the config file of the Virtuoso Universal Server.
 
 Usage:
   update_config.py -h|-v
@@ -7,7 +7,7 @@ Usage:
 
 Arguments:
   PARAMS...                 Set parameter(s) using the format:
-                              'sec:opt=val sec:opt=val...'
+                              'section:name=value ...'
 
 Options:
   -h, --help                Show the usage message.
