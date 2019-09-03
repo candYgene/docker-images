@@ -7,7 +7,7 @@ Usage:
 
 Arguments:
   PARAMS...                 Set parameter(s) using the format:
-                              'section:name=value ...'
+                              section:name=value ...
 
 Options:
   -h, --help                Show the usage message.
@@ -71,6 +71,13 @@ if __name__ == '__main__':
     cfg_file = args['--config']
     dry_run = args['--dry-run']
     
+    # config logging
+    logging.basicConfig(
+        filename=log_file,
+        filemode='a',
+        level=logging.INFO,
+        format='[%(asctime)s]\t%(pathname)s:%(lineno)d\t%(levelname)s\t%(message)s')
+
     if os.path.exists(cfg_file) is False:
         raise IOError("Config file '{0}' not found.".format(cfg_file))
 
@@ -78,14 +85,6 @@ if __name__ == '__main__':
     cfg.optionxform = str  # set case-sensitivity
     cfg.read(cfg_file)
     flag = cfg.setParams(params)
-    
-    # write log file of config changes
-    logging.basicConfig(
-        filename=log_file,
-        filemode='a',
-        level=logging.INFO,
-        format='[%(asctime)s]\t%(pathname)s:%(lineno)d\t%(levelname)s\t%(message)s')
-    logging.info("InputParams: %s\n", ' '.join(params))
 
     # backup the original config & write a modified config
     if dry_run is True:
@@ -93,5 +92,10 @@ if __name__ == '__main__':
     else:
         if flag is True:
             os.rename(cfg_file, cfg_file + '.bck')
+        
+        # write log
+        logging.info("InputParams: %s\n", ' '.join(params))
+        
+        # write updated config.ini
         with open(cfg_file, 'w') as fp:
             cfg.write(fp)
