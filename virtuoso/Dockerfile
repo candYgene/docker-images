@@ -41,6 +41,11 @@ ARG VOS_CFG_PARS="\
   Parameters:MaxDirtyBuffers=250000 \
   SPARQL:ResultSetMaxRows=1000"
 
+# set env variables
+ENV PATH=${VOS_PREFIX}/bin:${PATH}
+ENV VOS_SHARE=${VOS_SHARE}
+ENV VOS_CFG_FILE=${VOS_PREFIX}/var/lib/virtuoso/db/virtuoso.ini
+
 # compile Virtuoso including several VAD packages
 WORKDIR /tmp
 RUN git clone -b ${VOS_VERSION} https://github.com/openlink/virtuoso-opensource.git
@@ -57,11 +62,7 @@ RUN ./autogen.sh && \
 WORKDIR /tmp
 RUN rm -fr virtuoso-opensource
 
-# add Virtuoso binaries to PATH
-ENV PATH=${VOS_PREFIX}/bin:${PATH}
-
 # update Virtuoso config file
-ENV VOS_CFG_FILE=${VOS_PREFIX}/var/lib/virtuoso/db/virtuoso.ini
 COPY src/update_config.py /tmp
 RUN if [ "${VOS_CFG_PARS}" ]; then \
     python update_config.py -c ${VOS_CFG_FILE} ${VOS_CFG_PARS}; fi
