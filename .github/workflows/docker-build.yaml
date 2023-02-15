@@ -9,6 +9,7 @@ jobs:
       REGISTRY: ghcr.io
       TAG: dev
       NAME: virtuoso
+      FILE_PATH: virtuoso/Dockerfile
 
     steps:
       - name: Check out repo
@@ -24,6 +25,6 @@ jobs:
           echo "IMG_TAG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/${NAME}:${TAG}" >> ${GITHUB_ENV}
       - name: Build Docker image
         run: |
-          docker build -t $IMG_TAG .
+          docker build -t $IMG_TAG -f $FILE_PATH
       - name: Push Docker image to registry
         run: docker push $IMG_TAG
