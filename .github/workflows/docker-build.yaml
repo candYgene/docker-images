@@ -26,16 +26,19 @@ jobs:
         run: |
           echo "VOS_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/virtuoso:dev" >> ${GITHUB_ENV}
           echo "PBG_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/pbg-ld:dev" >> ${GITHUB_ENV}
-      # - name: Build docker image 1
-      #   working-directory: virtuoso
-      #   run: |
-      #     docker build -t $VOS_IMG .
+      - name: Build docker image 1
+        working-directory: virtuoso
+        run: |
+          docker build -t $VOS_IMG .
+      - name: Fetch RDF data from Zenodo
+        working-directory: pbg-ld
+        run: |
+          wget -nv https://zenodo.org/record/7641017/files/pbg-ld.zip
+          unzip pbg-ld.zip
       - name: Build docker image 2
         working-directory: pbg-ld
         run: |
-          wget https://zenodo.org/record/7641017/files/pbg-ld.zip
-          unzip pbg-ld.zip
-          mv data pbg-ld
+          ls -alh
           docker build -t $PBG_IMG .
       - name: Publish docker images
         run: |
