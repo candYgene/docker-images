@@ -22,17 +22,20 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Docker image names
+      - name: Set docker image names
         run: |
           echo "VOS_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/virtuoso:dev" >> ${GITHUB_ENV}
           echo "PBG_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/pbg-ld:dev" >> ${GITHUB_ENV}
-      - name: Build docker image
+      - name: Build docker image 1
         run: |
           docker build -t $VOS_IMG virtuoso
-      - name: Push image to registry
-        run: docker push $VOS_IMG
-      - name: Build docker image
+      - name: Build docker image 2
         run: |
+          wget https://zenodo.org/record/7641017/files/pbg-ld.zip
+          unzip pbg-ld.zip
+          ls -alh
           docker build -t $PBG_IMG virtuoso
-      - name: Push image to registry
-        run: docker push $PBG_IMG
+      - name: Publish docker images
+        run: |
+          docker push $VOS_IMG
+          docker push $PBG_IMG
