@@ -7,24 +7,32 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      TAG: dev
-      NAME: virtuoso
-      FILE_PATH: virtuoso
 
     steps:
-      - name: Check out repo
+      - name: Check out this repo
         uses: actions/checkout@v2
+      - name: Check out pbg-ld repo
+        uses: actions/checkout@v2
+        with:
+          repository: candYgene/pbg-ld
+          path: './pbg-ld/src'
       - name: Log into registry
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Docker image name
+      - name: Set Docker image names
         run: |
-          echo "IMG_TAG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/${NAME}:${TAG}" >> ${GITHUB_ENV}
-      - name: Build Docker image
+          echo "VOS_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/virtuoso:dev" >> ${GITHUB_ENV}
+          echo "PBG_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/pbg-ld:dev" >> ${GITHUB_ENV}
+      - name: Build docker image
         run: |
-          docker build -t $IMG_TAG $FILE_PATH
-      - name: Push Docker image to registry
-        run: docker push $IMG_TAG
+          docker build -t $VOS_IMG virtuoso
+      - name: Push image to registry
+        run: docker push $VOS_IMG
+      - name: Build docker image
+        run: |
+          docker build -t $PBG_IMG virtuoso
+      - name: Push image to registry
+        run: docker push $PBG_IMG
