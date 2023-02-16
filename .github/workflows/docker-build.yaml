@@ -1,6 +1,6 @@
 ---
 name: Docker image build
-on: push
+on: [push]
 
 jobs:
   build:
@@ -34,8 +34,7 @@ jobs:
         working-directory: pbg-ld
         run: |
           curl -sS -o pbg-ld.zip https://zenodo.org/record/7641017/files/pbg-ld.zip
-          df -h
-          unzip *.zip
+          unzip *.zip || true
       - name: Build docker image 2
         working-directory: pbg-ld
         run: |
