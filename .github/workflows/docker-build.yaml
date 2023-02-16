@@ -33,12 +33,13 @@ jobs:
       - name: Fetch RDF data from Zenodo
         working-directory: pbg-ld
         run: |
-          wget -nv https://zenodo.org/record/7641017/files/pbg-ld.zip
-          unzip pbg-ld.zip
+          curl -sS -o data.zip https://zenodo.org/record/3383758/files/SIGA-Solanaceae_SGN_annot.zip
+          unzip data.zip
+          find data -name *.ttl* -exec mv {} data \;
       - name: Build docker image 2
         working-directory: pbg-ld
         run: |
-          ls -alh
+          ls -alh data
           docker build -t $PBG_IMG .
       - name: Publish docker images
         run: |
