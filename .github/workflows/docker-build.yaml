@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Check out this repo
         uses: actions/checkout@v2
-      - name: Check out pbg-ld repo
+      - name: Check out another repo
         uses: actions/checkout@v2
         with:
           repository: candYgene/pbg-ld
-          path: './pbg-ld/src'
+          path: './pbg-ld'
       - name: Log into registry
         uses: docker/login-action@v1
         with:
@@ -26,10 +26,10 @@ jobs:
         run: |
           echo "VOS_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/virtuoso:dev" >> ${GITHUB_ENV}
           echo "PBG_IMG=${REGISTRY}/${GITHUB_REPOSITORY_OWNER,,}/pbg-ld:dev" >> ${GITHUB_ENV}
-      - name: Build docker image 1
-        working-directory: virtuoso
-        run: |
-          docker build -t $VOS_IMG .
+      # - name: Build docker image 1
+      #   working-directory: virtuoso
+      #   run: |
+      #     docker build -t $VOS_IMG .
       - name: Fetch RDF data from Zenodo
         working-directory: pbg-ld
         run: |
@@ -42,5 +42,4 @@ jobs:
           docker build -t $PBG_IMG .
       - name: Publish docker images
         run: |
-          docker push $VOS_IMG
           docker push $PBG_IMG
