@@ -27,7 +27,7 @@ RUN apt-get update && \
     pip install -U pip six docopt
 
 # add command-line args and set defaults
-ARG VOS_VERSION=stable/7
+ARG VOS_VERSION=v7.2.8
 ARG VOS_PREFIX=/usr/local/virtuoso-opensource
 ARG VOS_SHARE=/tmp/share
 ARG VOS_CFG_PARS="\

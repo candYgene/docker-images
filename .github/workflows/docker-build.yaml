@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMG_TAG: latest
+      IMG_TAG: dev
+      VOS_VERSION: v7.2.8
     steps:
       - name: Check out this repo
         uses: actions/checkout@v2
@@ -23,7 +24,7 @@ jobs:
       - name: Build docker image
         working-directory: virtuoso
         run: |
-          docker build -t $VOS_IMG .
+          docker build -t $VOS_IMG --build-arg ${VOS_VERSION} .
       - name: Publish docker images
         run: |
           docker push $VOS_IMG
