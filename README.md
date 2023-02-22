@@ -1,3 +1,5 @@
 # docker-images
 
-Docker image with [Virtuoso Universal Server](http://virtuoso.openlinksw.com/) (Open Source Edition).
+| Image | Status | Notes |
+| ---   | ---    | ---   |
+| [`candygene/virtuoso:latest`](https://github.com/candygene/docker-images/pkgs/container/virtuoso) | NA | [Virtuoso Universal Server](https://github.com/openlink/virtuoso-opensource) `stable/7` |
