@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMG_TAG: dev
+      IMG_TAG: latest
       VOS_VERSION: v7.2.8
     steps:
       - name: Check out this repo
